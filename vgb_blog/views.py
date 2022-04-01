@@ -120,7 +120,3 @@ def post_search(request):
         'results': results,
     }    
     return render(request, 'blog/post/search.html', context)
-
-
-
-
