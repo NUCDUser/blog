@@ -1,5 +1,6 @@
 asgiref==3.5.0
 Django==3.2.12
+django-decouple==2.1
 django-taggit==1.2.0
 Markdown==3.2.1
 psycopg2-binary==2.9.3
