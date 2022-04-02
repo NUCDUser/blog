@@ -15,4 +15,7 @@ urlpatterns = [
     
     #RSS
     path('feed/', LatestPostsFeed(), name='post_feed'),
+    path('index', views.Index.as_view(), name='index'),
+    path('detail', views.TempDetail.as_view(), name='detail'),
+    path('search2/', views.TempSearch.as_view(), name='search2'),
 ]

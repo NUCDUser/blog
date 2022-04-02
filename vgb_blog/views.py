@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.core.mail import send_mail
 from django.db.models import Count
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
@@ -11,6 +11,18 @@ from .models import Post, Comment
 from .forms import EmailPostForm, CommentForm, SearchForm
 
 # Create your views here.
+class Index(TemplateView):
+    template_name = 'blog/index.html'
+    
+
+class TempDetail(TemplateView):
+    template_name = 'blog/detail.html'
+    
+    
+class TempSearch(TemplateView):
+    template_name = 'blog/search.html'
+    
+
 class PostListView(ListView):
     queryset = Post.published.all()
     context_object_name = 'posts'

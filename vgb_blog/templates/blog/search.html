@@ -1,0 +1,89 @@
+{% extends 'blog/base.html' %}
+
+{% load static %}
+
+{% block title %}TODO TITLE{% endblock %}
+{% block content %}
+<div class="container-md pt-5">
+  <div class="row g-5"> 
+    <div class="col-md-8">
+      <div id="results" class="d-flex align-items-center justify-content-between">
+        <h2 class="pb-3 border-0"><span>52</span> Results</h2>
+        <ul class="list-group list-group-horizontal">
+          <li class="list-group-item">
+            <a href="">
+              <small>newest</small>
+            </a>
+          </li>
+          <li class="list-group-item">
+            <a href="">
+              <small>oldest</small>
+            </a>
+          </li>
+          <li class="list-group-item">
+            <a href="">
+              <small>relevancy</small>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{% static 'blog/img/profile.jpeg' %}" class="img-fluid rounded-start" alt="placeholder">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <div class="p-4 mb-3">
+          <h4 class="fst-italic">Popular</h4>
+          <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+        </div>
+
+        <div class="p-4 mb-3">
+          <h4 class="fst-italic">Similar Posts</h4>
+          <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+        </div>
+  
+        <div class="p-4">
+          <h4 class="fst-italic">Archives</h4>
+          <ol class="list-unstyled mb-0">
+            <li><a href="#">March 2021</a></li>
+            <li><a href="#">February 2021</a></li>
+            <li><a href="#">January 2021</a></li>
+            <li><a href="#">December 2020</a></li>
+            <li><a href="#">November 2020</a></li>
+            <li><a href="#">October 2020</a></li>
+            <li><a href="#">September 2020</a></li>
+            <li><a href="#">August 2020</a></li>
+            <li><a href="#">July 2020</a></li>
+            <li><a href="#">June 2020</a></li>
+            <li><a href="#">May 2020</a></li>
+            <li><a href="#">April 2020</a></li>
+          </ol>
+        </div>
+  
+        <div class="p-4">
+          <h4 class="fst-italic">Tags</h4>
+          <ol class="list-unstyled">
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Facebook</a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+  
