@@ -7,8 +7,13 @@
 <div class="container-md pt-5">
   <div class="row g-5"> 
     <div class="col-md-8">
+      <div class="search-results">
+        {{ search_form }} <!-- TODO Make it have the query search term preloaded -->
+      </div>
       <div id="results" class="d-flex align-items-center justify-content-between">
-        <h2 class="pb-3 border-0"><span>52</span> Results</h2>
+        {% with results.count as total_results %}
+        <h2 class="pb-3 border-0"><span>{{ total_results }}</span> Result{{ total_results|pluralize }}</h2>
+        {% endwith %}
         <ul class="list-group list-group-horizontal">
           <li class="list-group-item">
             <a href="">
@@ -27,6 +32,7 @@
           </li>
         </ul>
       </div>
+      {% for post in results %}
       <div class="card mb-3">
         <div class="row g-0">
           <div class="col-md-4">
@@ -34,13 +40,16 @@
           </div>
           <div class="col-md-8">
             <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              <h5 class="card-title">{{post.title}}</h5>
+              <p class="card-text">{{ post.body }}</p>
+              {% if post.has_been_updated %}
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
+      {% endfor %}
     </div>
 
     <div class="col-md-4">

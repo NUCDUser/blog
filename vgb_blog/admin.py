@@ -1,7 +1,11 @@
 from django.contrib import admin
-from .models import Post, Comment
+from .models import Post, Comment, PostImages
 
 # Register your models here.
+class PostImagesAdmin(admin.StackedInline):
+    model = PostImages
+
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug', 'author', 'publish', 'status')
@@ -11,6 +15,7 @@ class PostAdmin(admin.ModelAdmin):
     raw_id_field = ('author',)
     date_hierarchy = 'publish'
     ordering = ('status', 'publish')
+    inlines = PostImagesAdmin
     
 
 @admin.register(Comment)
