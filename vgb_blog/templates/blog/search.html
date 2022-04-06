@@ -1,15 +1,22 @@
 {% extends 'blog/base.html' %}
 
 {% load static %}
+{% load humanize %}
+{% load blog_tags %}
 
 {% block title %}TODO TITLE{% endblock %}
 {% block content %}
 <div class="container-md pt-5">
   <div class="row g-5"> 
     <div class="col-md-8">
-      <div class="search-results">
+      <form action="{% url 'blog:search' %}" method="get" class="input-group">
+        <button type="submit" class="btn btn-outline-success">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+          </svg>
+        </button>
         {{ search_form }} <!-- TODO Make it have the query search term preloaded -->
-      </div>
+      </form>
       <div id="results" class="d-flex align-items-center justify-content-between">
         {% with results.count as total_results %}
         <h2 class="pb-3 border-0"><span>{{ total_results }}</span> Result{{ total_results|pluralize }}</h2>
@@ -33,7 +40,7 @@
         </ul>
       </div>
       {% for post in results %}
-      <div class="card mb-3">
+      <div class="card mb-3 border-0">
         <div class="row g-0">
           <div class="col-md-4">
             <img src="{% static 'blog/img/profile.jpeg' %}" class="img-fluid rounded-start" alt="placeholder">
@@ -41,17 +48,28 @@
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title">{{post.title}}</h5>
-              <p class="card-text">{{ post.body }}</p>
+              <h6 class="card-title text-muted fw-normal">By <span class="fw-bold">{{ post.author|capfirst }}</span> | {{ post.publish|date:"F j Y | h:i a "}}</h6>
+              <p class="card-text">{{ post.body|truncatewords:30 }}</p>
               {% if post.has_been_updated %}
-                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                <p class="card-text"><small class="text-muted">Last updated {{ post.updated|naturaltime }}</small></p>
               {% endif %}
             </div>
           </div>
         </div>
       </div>
+      
+      {% if not forloop.last %}
+        <hr>
+      {% endif %}
+  
+      {% empty %}
+        <p>No results found</p>
       {% endfor %}
+
+      {% include 'blog/pagination.html' with page=results %}
     </div>
 
+    <!-- SIDEBAR -->
     <div class="col-md-4">
       <div class="position-sticky" style="top: 2rem;">
         <div class="p-4 mb-3">
@@ -59,37 +77,11 @@
           <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
         </div>
 
-        <div class="p-4 mb-3">
-          <h4 class="fst-italic">Similar Posts</h4>
-          <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
-        </div>
+        {% show_latest_posts %}
   
-        <div class="p-4">
-          <h4 class="fst-italic">Archives</h4>
-          <ol class="list-unstyled mb-0">
-            <li><a href="#">March 2021</a></li>
-            <li><a href="#">February 2021</a></li>
-            <li><a href="#">January 2021</a></li>
-            <li><a href="#">December 2020</a></li>
-            <li><a href="#">November 2020</a></li>
-            <li><a href="#">October 2020</a></li>
-            <li><a href="#">September 2020</a></li>
-            <li><a href="#">August 2020</a></li>
-            <li><a href="#">July 2020</a></li>
-            <li><a href="#">June 2020</a></li>
-            <li><a href="#">May 2020</a></li>
-            <li><a href="#">April 2020</a></li>
-          </ol>
-        </div>
-  
-        <div class="p-4">
-          <h4 class="fst-italic">Tags</h4>
-          <ol class="list-unstyled">
-            <li><a href="#">GitHub</a></li>
-            <li><a href="#">Twitter</a></li>
-            <li><a href="#">Facebook</a></li>
-          </ol>
-        </div>
+        {% archive_dates %}
+
+        {% include 'blog/snippets/social_media.html' %}
       </div>
     </div>
   </div>

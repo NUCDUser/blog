@@ -3,6 +3,7 @@ import markdown
 from django import template
 from django.db.models import Count
 from django.utils.safestring import mark_safe
+from django.db.models.functions import TruncMonth, TruncYear
 
 from ..models import Post
 
@@ -23,7 +24,25 @@ def total_posts():
     return Post.published.count()
 
 
-@register.inclusion_tag('blog/post/latest_posts.html')
+@register.simple_tag
+def categories(instance):
+    category_tags = instance.tags
+    return ', '.join(category_tags.names()).lower()
+
+
+@register.inclusion_tag('blog/tag_snippets/latest_posts.html')
 def show_latest_posts(count=5):
     latest_posts = Post.published.order_by('-publish')[:count]
     return {'latest_posts': latest_posts}
+
+
+@register.inclusion_tag('blog/tag_snippets/tags.html')
+def post_tags(post, total_tags=2):
+    tags = post.tags.all()[:total_tags]
+    return {'tags': tags,}
+
+
+@register.inclusion_tag('blog/tag_snippets/archives.html')
+def archive_dates(month_limit=12):
+    dates = Post.published.dates('publish', 'month')[:month_limit]
+    return {'dates': dates,}

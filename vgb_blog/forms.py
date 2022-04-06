@@ -1,13 +1,14 @@
+from cProfile import label
 from django import forms
 from .models import Comment
 
 class SearchForm(forms.Form):
-    query = forms.CharField()
+    query = forms.CharField(label='')
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            print(field_name, field)
+        self.fields['query'].widget.attrs['class'] = 'form-control'
+        self.fields['query'].widget.attrs['placeholder'] = 'Search'
     
 
 class EmailPostForm(forms.Form):

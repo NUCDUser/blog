@@ -1,0 +1,8 @@
+<div class="p-4">
+  <h4 class="fst-italic">Archives</h4>
+  <ol class="list-unstyled mb-0"> 
+    {% for timeframe in dates %}
+      <li><a href="#">{{ timeframe|date:"F Y" }}</a></li>
+    {% endfor %}
+  </ol>
+</div>
