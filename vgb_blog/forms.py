@@ -9,6 +9,7 @@ class SearchForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['query'].widget.attrs['class'] = 'form-control'
         self.fields['query'].widget.attrs['placeholder'] = 'Search'
+        self.fields['query'].widget.attrs['id'] = 'search-input'
     
 
 class EmailPostForm(forms.Form):

@@ -1,0 +1,29 @@
+{% load blog_tags %}
+
+<div class="col-md-4">
+  <div class="position-sticky" style="top: 2rem;">
+    <div class="p-4 mb-3">
+      <h4 class="fst-italic">Popular</h4>
+      <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+    </div>
+
+    {% if similar_posts %}
+      <div class="p-4">
+        <h4 class="fst-italic">Similar Posts</h4>
+        {% for post in similar_posts %}
+          <p class="mb-0">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+          </p>
+        {% empty %}
+          <p class="mb-0">This post does not assimilate any other.</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% show_latest_posts %}
+
+    {% archive_dates %}
+
+    {% include 'blog/snippets/social_media.html' %}
+  </div>
+</div>
