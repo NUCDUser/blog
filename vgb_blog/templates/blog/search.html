@@ -20,7 +20,7 @@
       <div id="results" class="d-flex align-items-center justify-content-between">
         <h2 class="pb-3 border-0"><span>{{ total_results }}</span> Result{{ total_results|pluralize }}</h2>
         
-        {% if not searching_tags %}
+        {% if normal_search %}
         <ul class="list-group list-group-horizontal">
           <li class="list-group-item">
             <a href="?query={{ query }}&order_by=newest">
@@ -67,7 +67,7 @@
         <p>No results found</p>
       {% endfor %}
 
-      {% include 'blog/pagination.html' with page=page %}
+      {% include 'blog/snippets/pagination.html' with page=page %}
     </div>
 
     <!-- SIDEBAR -->

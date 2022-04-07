@@ -50,11 +50,15 @@ class SearchView(ListView):
     context_object_name = 'results'
     paginator_class = CustomPaginator
     query_keyword = None
+    normal_search = False
+    searching_tags = False
+    searching_dates = False
     
     def get_queryset(self):
         if 'query' in self.request.GET:
             form = SearchForm(self.request.GET)
             if form.is_valid():
+                self.normal_search = True
                 self.query_keyword = form.cleaned_data['query']
                 base_query = Post.published.annotate(similarity=TrigramSimilarity('title', self.query_keyword)).filter(similarity__gt=0.1)
                 if 'order_by' in self.request.GET:
@@ -65,32 +69,46 @@ class SearchView(ListView):
                 return base_query.order_by('-similarity')
             
         elif 'year' and 'month' in self.kwargs:
-            return Post.published.filter(publish__year=self.kwargs['year'], publish__month=self.kwargs['month'])
+            return Post.published.filter(publish__year=self.kwargs['year'], publish__month=self.kwargs['month']).order_by('-publish')
         
         elif 'slug' in self.request.GET:
+            self.searching_tags = True
             self.query_keyword = self.request.GET['slug']
             try:
                 tag = Tag.objects.get(slug=slugify(self.query_keyword))
                 return Post.published.all().filter(tags__in=[tag])
             except ObjectDoesNotExist:
-                pass # Will go to the default return of the get_queryset function
+                pass # Will go to the default return of the get_queryset function which returns an empty queryset
             
         return Post.objects.none()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # when at /search hide the search bar functionality of the nav
-        context['searching'] = True 
+        # When at /search hide the search bar functionality of the nav
+        context['searching'] = True
+        
+        # In the case no query was given, send an empty search box
         context['search_form'] = SearchForm()
         context['total_results'] = self.object_list.count()
-        paginator = self.paginator_class(self.object_list, self.paginate_by)
-
-        page = self.request.GET.get('page')
-        paginator_pages = paginator.page(page)
-        context['page'] = paginator_pages
+        
+        # Adds what was queried to the search box
         if self.query_keyword:
             context['search_form'] = SearchForm(initial={'query':self.query_keyword})
             context['query'] = self.query_keyword
+        
+        # Adds the # symbol to the front of the query
+        # Sends 'searching_tags' to the template to hide result filters
+        if self.searching_tags:
+            context['search_form'] = SearchForm(initial={'query': '#' +  self.query_keyword})
+            
+        if self.normal_search:
+            context['normal_search'] = True
+            
+        # Prepares the paginator object needed for the template pagination
+        paginator = self.paginator_class(self.object_list, self.paginate_by)
+        page = self.request.GET.get('page')
+        paginator_pages = paginator.page(page)
+        context['page'] = paginator_pages
         return context
 
 class PostListView(ListView):
