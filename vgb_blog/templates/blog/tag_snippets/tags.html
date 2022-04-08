@@ -1,4 +1,4 @@
 {% for tag in tags %}
-  <a href="/blog/tag/?slug={{ tag.slug }}">{{ tag|lower }}</a>
-  {% if not forloop.last %}, {% endif %}
+  <a href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag|lower }}</a>
+  {% if not forloop.last %}<span>,&nbsp;</span>{% endif %}
 {% endfor %}

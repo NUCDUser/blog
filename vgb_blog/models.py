@@ -1,4 +1,5 @@
 import os
+from sre_parse import CATEGORIES
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -21,6 +22,23 @@ class Post(models.Model):
         ('draft', 'Draft'),
         ('published', 'Published'),
     )
+    
+    CATEGORIES_CHOICES = (
+        ('test', 'Test'),
+        ('tutorials', 'Tutorials'),
+        ('guides', 'Guides'),
+        ('reeds', 'Reeds'),
+        ('lifestyle', 'Lifestyle'),
+        ('mental_health', 'Mental Health'),
+        ('psyche', 'Psyche'),
+        ('bassoon', 'Bassoon'),
+        ('computers', 'Computers'),
+        ('technology', 'Technology'),
+        ('production', 'Production'),
+        ('web-dev', 'Web Development'),
+        ('personal', 'Personal'),
+        ('shower_thoughts', 'Shower Thoughts'),
+    )
 
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique_for_date='publish')
@@ -33,6 +51,7 @@ class Post(models.Model):
     objects = models.Manager()
     published = PublishedManager()
     tags = TaggableManager()
+    category = models.CharField(max_length=20, choices=CATEGORIES_CHOICES, default='test')
 
     class Meta:
         ordering = ('-publish',)
@@ -49,7 +68,7 @@ class Post(models.Model):
 class PostImages(models.Model):
     name = models.CharField(max_length=64)
     image = models.ImageField(upload_to=upload_path)
-    blog = models.ForeignKey(Post, on_delete=models.CASCADE)
+    blog = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
     source_or_author = models.CharField(max_length=128, blank=True, null=True)
     
     def __str__(self):

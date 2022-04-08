@@ -23,10 +23,9 @@ searchForm.onsubmit = function (e) {
             .slice(1)
             .replaceAll(" ", "-")
             .toLowerCase();
-        searchInput.name = "slug";
-        searchInput.value = newValue;
-        searchForm.action = `/blog/tag/?slug=${newValue}`;
-        searchForm.submit();
+        let tagUrl = `/blog/search/tag/${newValue}`;
+        window.location.assign(tagUrl);
     }
-    searchForm.submit();
+    let tagUrl = `/blog/search/${searchInput.value}`;
+    window.location.assign(tagUrl);
 };

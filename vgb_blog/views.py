@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.http import Http404, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
@@ -50,98 +51,82 @@ class SearchView(ListView):
     context_object_name = 'results'
     paginator_class = CustomPaginator
     query_keyword = None
-    normal_search = False
     searching_tags = False
-    searching_dates = False
+    searching_text = False
+    searching_category = False
     
     def get_queryset(self):
-        if 'query' in self.request.GET:
-            form = SearchForm(self.request.GET)
-            if form.is_valid():
-                self.normal_search = True
-                self.query_keyword = form.cleaned_data['query']
-                base_query = Post.published.annotate(similarity=TrigramSimilarity('title', self.query_keyword)).filter(similarity__gt=0.1)
-                if 'order_by' in self.request.GET:
-                    if self.request.GET['order_by'] == 'newest':
-                        return base_query.order_by('-publish')
-                    elif self.request.GET['order_by'] == 'oldest':
-                        return base_query.order_by('publish')
+        if 'query' in self.kwargs:
+            self.searching_text = True
+            self.query_keyword = self.kwargs['query']
+            base_query = Post.published.annotate(similarity=TrigramSimilarity('title', self.query_keyword)).filter(similarity__gt=0.1)
+            if 'order_by' not in self.request.GET or self.request.GET['order_by'] == 'relevance':
                 return base_query.order_by('-similarity')
+            queryset = self._order_by(base_query)
+            return queryset
             
         elif 'year' and 'month' in self.kwargs:
-            return Post.published.filter(publish__year=self.kwargs['year'], publish__month=self.kwargs['month']).order_by('-publish')
+            base_query = Post.published.filter(publish__year=self.kwargs['year'], publish__month=self.kwargs['month']).order_by('-publish')
+            queryset = self._order_by(base_query)
+            return queryset
         
-        elif 'slug' in self.request.GET:
+        elif 'tag_name' in self.kwargs:
             self.searching_tags = True
-            self.query_keyword = self.request.GET['slug']
+            self.query_keyword = self.kwargs['tag_name']
             try:
-                tag = Tag.objects.get(slug=slugify(self.query_keyword))
-                return Post.published.all().filter(tags__in=[tag])
+                tag = Tag.objects.get(slug=self.query_keyword)
+                base_query = Post.published.all().filter(tags__in=[tag])
             except ObjectDoesNotExist:
-                pass # Will go to the default return of the get_queryset function which returns an empty queryset
+                return Post.objects.none()
+            queryset = self._order_by(base_query)
+            return queryset
+        
+        elif 'category' in self.kwargs:
+            self.searching_category = True
+            self.query_keyword = self.kwargs['category']
+            base_query = Post.published.filter(category__iexact=self.query_keyword.replace(' ', '_'))
+            queryset = self._order_by(base_query)
+            return queryset
             
-        return Post.objects.none()
+        else:
+            return Post.objects.none()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # When at /search hide the search bar functionality of the nav
         context['searching'] = True
-        
-        # In the case no query was given, send an empty search box
-        context['search_form'] = SearchForm()
+        context['search_form'] = self._search_form_setup()
         context['total_results'] = self.object_list.count()
-        
-        # Adds what was queried to the search box
-        if self.query_keyword:
-            context['search_form'] = SearchForm(initial={'query':self.query_keyword})
-            context['query'] = self.query_keyword
-        
-        # Adds the # symbol to the front of the query
-        # Sends 'searching_tags' to the template to hide result filters
-        if self.searching_tags:
-            context['search_form'] = SearchForm(initial={'query': '#' +  self.query_keyword})
-            
-        if self.normal_search:
-            context['normal_search'] = True
-            
-        # Prepares the paginator object needed for the template pagination
-        paginator = self.paginator_class(self.object_list, self.paginate_by)
-        page = self.request.GET.get('page')
-        paginator_pages = paginator.page(page)
-        context['page'] = paginator_pages
+        context['page'] = self._paginator_setup()
         return context
-
-class PostListView(ListView):
-    template_name = 'blog/search.html'
-    paginate_by = 5
-    context_object_name = 'results'
-    paginator_class = CustomPaginator
-    query_keyword = None
     
-    def get_queryset(self):
-        if 'slug' in self.request.GET:
-            self.query_keyword = self.request.GET['slug']
-            try:
-                tag = Tag.objects.get(slug=slugify(self.query_keyword))
-                return Post.published.all().filter(tags__in=[tag])
-            except ObjectDoesNotExist:
-                pass
-        return Post.objects.none()
+    def _order_by(self, base_query):
+        '''Orders the base queryset if specified on the request'''
+        if 'order_by' in self.request.GET:
+            if self.request.GET['order_by'] == 'newest':
+                return base_query.order_by('-publish')
+            elif self.request.GET['order_by'] == 'oldest':
+                return base_query.order_by('publish')
+            return base_query.order_by('-publish')
+        return base_query
+    
+    def _search_form_setup(self):
+        '''Returns a form object with placeholder reflecting the search term'''
+        if self.searching_text:
+            placeholder = self.kwargs['query']
+        elif self.searching_category:
+            placeholder = '@' + self.kwargs['category']
+        elif self.searching_tags:
+            placeholder = '#' + self.kwargs['tag_name']
+        else:
+            placeholder = ''
+        return SearchForm(initial={'query': placeholder})
         
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['searching'] = True
-        context['searching_tags'] = True
-        context['search_form'] = SearchForm()
-        if self.query_keyword:
-            context['search_form'] = SearchForm(initial={'query': '#' +  self.query_keyword})
-        context['total_results'] = self.object_list.count()
+    def _paginator_setup(self):
+        ''' Prepares the paginator object needed for the template pagination'''
         paginator = self.paginator_class(self.object_list, self.paginate_by)
-
         page = self.request.GET.get('page')
-        paginator_pages = paginator.page(page)
-        context['page'] = paginator_pages
-        return context
+        return paginator.page(page)
 
 
 class Detail(View):
@@ -214,49 +199,3 @@ def post_share(request, post_id):
         'sent': sent
         }
     return render(request, 'blog/post/share.html', context)
-
-
-# def post_list(request, tag_slug=None):
-#     object_list = Post.published.all()
-#     tag = None
-    
-#     if tag_slug:
-#         tag = get_object_or_404(Tag, slug=tag_slug)
-#         object_list = object_list.filter(tags__in=[tag])
-        
-#     paginator = Paginator(object_list, 3)
-#     page = request.GET.get('page')
-#     try:
-#         posts = paginator.page(page)
-#     except PageNotAnInteger:
-#         posts = paginator.page(1)
-#     except EmptyPage:
-#         posts = paginator.page(paginator.num_pages)
-        
-#     context = {
-#         'page': page,
-#         'posts': posts,
-#         'tag': tag,
-#         }
-#     return render(request, 'blog/post/list.html', context)
-
-
-# def post_search(request):
-#     form = SearchForm()
-#     query = None
-#     results = []
-#     if 'query' in request.GET:
-#         form = SearchForm(request.GET)
-#         if form.is_valid():
-#             query = form.cleaned_data['query']
-#             search_vector = SearchVector('title', weight='A') + SearchVector('body', weight='B')
-#             search_query = SearchQuery(query)
-#             # results = Post.published.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).filter(rank__gte=0.3).order_by('-rank')
-#             results = Post.published.annotate(similarity=TrigramSimilarity('title', query)).filter(similarity__gt=0.1).order_by('-similarity')
-            
-#     context = {
-#         'form': form,
-#         'query': query,
-#         'results': results,
-#     }    
-#     return render(request, 'blog/post/search.html', context)

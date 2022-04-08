@@ -9,15 +9,19 @@ searchButton.onclick = function () {
 
 searchForm.onsubmit = function (e) {
     e.preventDefault();
+    console.log(searchInput.value);
     if (searchInput.value.startsWith("#")) {
         let newValue = searchInput.value
             .slice(1)
             .replaceAll(" ", "-")
             .toLowerCase();
-        searchInput.name = "slug";
-        searchInput.value = newValue;
-        searchForm.action = `/blog/tag/?slug=${newValue}`;
-        searchForm.submit();
+        let tagUrl = `/blog/search/tag/${newValue}`;
+        console.log(tagUrl);
+        console.log(newValue);
+        window.location.assign(tagUrl);
+        return;
     }
-    searchForm.submit();
+    let tagUrl = `/blog/search/${searchInput.value}`;
+    window.location.assign(tagUrl);
+    return;
 };
