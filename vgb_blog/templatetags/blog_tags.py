@@ -37,12 +37,22 @@ def show_latest_posts(count=5):
 
 
 @register.inclusion_tag('blog/tag_snippets/tags.html')
-def post_tags(post, total_tags=2):
-    tags = post.tags.all()[:total_tags]
+def post_tags(post, max_tags=2):
+    tags = post.tags.all()[:max_tags]
     return {'tags': tags,}
 
 
 @register.inclusion_tag('blog/tag_snippets/archives.html')
-def archive_dates(month_limit=12):
+def get_archive_dates(month_limit=12):
     dates = Post.published.dates('publish', 'month')[:month_limit]
     return {'dates': dates,}
+
+
+@register.inclusion_tag('blog/tag_snippets/categories.html')
+def get_categories(max_categories=99):
+    '''Gets only the active categories list from the full CATEGORIES_CHOICES'''
+    categories = Post.published.distinct('category').values_list('category', flat=True).order_by()
+    choices_list = dict(Post.CATEGORIES_CHOICES)
+    print(categories)
+    active_categories = sorted(tuple((category, choices_list.get(category)) for category in categories))
+    return {'categories': active_categories}

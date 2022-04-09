@@ -25,6 +25,14 @@ searchForm.onsubmit = function (e) {
             .toLowerCase();
         let tagUrl = `/blog/search/tag/${newValue}`;
         window.location.assign(tagUrl);
+    } else if (searchInput.value.startsWith("@")) {
+        let newValue = searchInput.value
+            .slice(1)
+            .replaceAll(" ", "_")
+            .toLowerCase();
+        let tagUrl = `/blog/search/category/${newValue}`;
+        window.location.assign(tagUrl);
+        return;
     }
     let tagUrl = `/blog/search/${searchInput.value}`;
     window.location.assign(tagUrl);

@@ -35,7 +35,7 @@ class Post(models.Model):
         ('computers', 'Computers'),
         ('technology', 'Technology'),
         ('production', 'Production'),
-        ('web-dev', 'Web Development'),
+        ('web_development', 'Web Development'),
         ('personal', 'Personal'),
         ('shower_thoughts', 'Shower Thoughts'),
     )

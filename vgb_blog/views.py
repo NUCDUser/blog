@@ -94,7 +94,7 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # When at /search hide the search bar functionality of the nav
-        context['searching'] = True
+        context['at_search_page'] = True
         context['search_form'] = self._search_form_setup()
         context['total_results'] = self.object_list.count()
         context['page'] = self._paginator_setup()

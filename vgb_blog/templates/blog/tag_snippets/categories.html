@@ -1,0 +1,8 @@
+<div class="p-4">
+  <h4 class="fst-italic">Categories</h4>
+  <ol class="list-unstyled mb-0"> 
+    {% for category in categories %}
+      <li><a href="{% url 'blog:post_list_by_category' category.0 %}">{{ category.1 }}</a></li>
+    {% endfor %}
+  </ol>
+</div>

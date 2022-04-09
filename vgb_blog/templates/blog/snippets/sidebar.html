@@ -22,8 +22,12 @@
 
     {% show_latest_posts %}
 
-    {% archive_dates %}
+    {% get_categories %}
+
+    {% get_archive_dates %}
 
     {% include 'blog/snippets/social_media.html' %}
+
+    {% include 'blog/snippets/donate.html' %}
   </div>
 </div>

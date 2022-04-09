@@ -1,3 +1,5 @@
+{% load blog_tags %}
+
 <nav class="border-bottom" id="navbar">
   <div class="container-md">
     <header class="blog-header py-3">
@@ -12,14 +14,41 @@
           <button type="button" class="btn link-secondary border-0" aria-label="Search" id="search-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
           </button>
-          <a class="btn btn-sm btn-outline-secondary" href="#">Archive</a>
+          <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#Modal">
+            Categories
+          </button>
         </div>
       </div>
     </header>
   </div>
 </nav>
 
-{% if not searching %}
+<!-- Modal -->
+<div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">Archive Search</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-6">
+            {% get_archive_dates %}
+          </div>
+          <div class="col-6">
+            {% get_categories %}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if not at_search_page %}
   <div class="d-flex align-items-center justify-content-center" id="search-bar">
     <form action="{% url 'blog:post_list_by_query' 'p' %}" method="get" class="wrapper p-2 input-group" style="max-width: 300px;" id="search-form">
       <button type="submit" class="btn btn-outline-success">
