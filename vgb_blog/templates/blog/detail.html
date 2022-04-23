@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %}
+{% load i18n %}
 
 {% load static %}
 {% load blog_tags %}
@@ -15,13 +16,13 @@
         <h1 class="blog-post-title border-0 m-0 p-0">{{ post.title }}</h1>
         <div class="d-flex align-items-center justify-content-between pb-2 mb-2 border-bottom">
           <small>By <a href="#">{{ post.author|capfirst }}</a></small>
-          <small>{{ post.publish|date:"F j, Y | h:i a"}}{% if has_been_updated %} | Updated {{ post.updated|naturaltime }}{% endif %}</small>
+          <small>{{ post.publish|date:"F j, Y | h:i a"}}{% if has_been_updated %} | {% trans 'Updated' %} {{ post.updated|naturaltime }}{% endif %}</small>
         </div>
         <p>{{ post.body|markdown }}</p>
       </article>
       
       <div class="tags d-flex py-2">
-        <span class="pe-2 filed-under">Filed under</span>
+        <span class="pe-2 filed-under">{% trans 'Filed under' %}</span>
         {% post_tags post 8 %}
       </div>
 
@@ -32,7 +33,7 @@
           </div>
           <div class="col-md-10">
             <div class="card-body">
-              <h5 class="card-title">About {{ post.author|capfirst }}</h5>
+              <h5 class="card-title">{% trans 'About' %} {{ post.author|capfirst }}</h5>
               <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
             </div>
           </div>
@@ -40,7 +41,7 @@
       </div>
 
       <nav class="next-post d-flex py-2 border-bottom" aria-label="Next Post">
-        <a class="pe-2 read-next" href="{{ similar_posts.0.get_absolute_url }}">Read next</a>
+        <a class="pe-2 read-next" href="{{ similar_posts.0.get_absolute_url }}">{% trans 'Read next' %}</a>
         <a href="{{ similar_posts.0.get_absolute_url }}">{{ similar_posts.0.title }}</a>
       </nav>
   

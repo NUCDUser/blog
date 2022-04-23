@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <footer class="border-top mt-auto">
   <div class="container-md">
     <div class="row row-cols-5 py-5 my-5">
@@ -13,7 +15,18 @@
       </div>
   
       <div class="col">
-        <h5>Section</h5>
+        <h5>{% trans 'Section' %}</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Home' %}</a></li>
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Features' %}</a></li>
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Pricing' %}</a></li>
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'FAQs' %}</a></li>
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'About' %}</a></li>
+        </ul>
+      </div>
+  
+      <div class="col">
+        <h5>{% trans 'Section' %}</h5>
         <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
@@ -24,18 +37,7 @@
       </div>
   
       <div class="col">
-        <h5>Section</h5>
-        <ul class="nav flex-column">
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
-        </ul>
-      </div>
-  
-      <div class="col">
-        <h5>Section</h5>
+        <h5>{% trans 'Section' %}</h5>
         <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>

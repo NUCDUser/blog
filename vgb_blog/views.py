@@ -1,4 +1,4 @@
-from unicodedata import category
+
 from django.http import Http404, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
@@ -111,7 +111,11 @@ class SearchView(ListView):
         return base_query
     
     def _search_form_setup(self):
-        '''Returns a form object with placeholder reflecting the search term'''
+        '''
+        Returns a form object.
+        Depending on the search, a placeholder for the form will be initialized
+        reflecting the search term
+        '''
         if self.searching_text:
             placeholder = self.kwargs['query']
         elif self.searching_category:

@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from decouple import config
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,6 +36,12 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
+    'vgb_blog.apps.VgbBlogConfig',
+    
+    'rosetta',
+    'parler',
+    'taggit',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,8 +53,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django.contrib.humanize',
     
-    'vgb_blog.apps.VgbBlogConfig',
-    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -116,6 +122,27 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = (
+    ('en', _('English')),
+    ('es', _('Spanish')),
+)
+
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'en'},
+        {'code': 'es'},
+    ),
+    'default': {
+        'fallback': 'en',
+        'hide_untranslated': False
+    }
+}
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'core', 'locale'),
+    os.path.join(BASE_DIR, 'vgb_blog', 'locale'),
+)
 
 TIME_ZONE = 'UTC'
 

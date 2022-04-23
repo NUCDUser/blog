@@ -1,4 +1,6 @@
 from django.contrib import admin
+from parler.admin import TranslatableAdmin
+
 from .models import Post, Comment, PostImages
 
 # Register your models here.
@@ -7,15 +9,17 @@ class PostImagesAdmin(admin.StackedInline):
 
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(TranslatableAdmin):
     list_display = ('title', 'slug', 'author', 'publish', 'status')
     list_filter = ('status', 'created', 'publish', 'author')
     search_fields = ('title', 'body')
-    prepopulated_fields = {'slug': ('title',)}
     raw_id_field = ('author',)
     date_hierarchy = 'publish'
     ordering = ('status', 'publish')
     inlines = (PostImagesAdmin,)
+    
+    def get_prepopulated_fields(self, request, obj=None):
+        return {'slug': ('title',)}
     
 
 @admin.register(Comment)

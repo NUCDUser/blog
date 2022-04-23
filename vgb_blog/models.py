@@ -1,10 +1,11 @@
 import os
-from sre_parse import CATEGORIES
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
+from parler.models import TranslatableModel, TranslatedFields
 from taggit.managers import TaggableManager
 
 # Create your models here.
@@ -15,35 +16,31 @@ def upload_path(instance, filename):
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return super(PublishedManager, self).get_queryset().filter(status='published')
+    
+    
+class Category(TranslatableModel):
+    translations = TranslatedFields(
+        name = models.CharField(max_length=20, db_index=True),
+        slug = models.SlugField(max_length=20, unique=True),
+    )
+    tag_color = models.CharField(max_length=6, unique=True)
 
+    class Meta:
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
 
-class Post(models.Model):
+class Post(TranslatableModel):
     STATUS_CHOICES = (
         ('draft', 'Draft'),
         ('published', 'Published'),
     )
     
-    CATEGORIES_CHOICES = (
-        ('test', 'Test'),
-        ('tutorials', 'Tutorials'),
-        ('guides', 'Guides'),
-        ('reeds', 'Reeds'),
-        ('lifestyle', 'Lifestyle'),
-        ('mental_health', 'Mental Health'),
-        ('psyche', 'Psyche'),
-        ('bassoon', 'Bassoon'),
-        ('computers', 'Computers'),
-        ('technology', 'Technology'),
-        ('production', 'Production'),
-        ('web_development', 'Web Development'),
-        ('personal', 'Personal'),
-        ('shower_thoughts', 'Shower Thoughts'),
+    translations = TranslatedFields(
+        title = models.CharField(_('title'), max_length=250),
+        slug = models.SlugField(max_length=250, unique_for_date='publish'),
+        body = models.TextField(),
     )
-
-    title = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=250, unique_for_date='publish')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
-    body = models.TextField()
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -51,7 +48,7 @@ class Post(models.Model):
     objects = models.Manager()
     published = PublishedManager()
     tags = TaggableManager()
-    category = models.CharField(max_length=20, choices=CATEGORIES_CHOICES, default='test')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='posts', null=True)
 
     class Meta:
         ordering = ('-publish',)

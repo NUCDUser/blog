@@ -1,0 +1,159 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-22 19:20+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: vgb_blog/models.py:39
+msgid "title"
+msgstr ""
+
+#: vgb_blog/templates/blog/detail.html:19
+msgid "Updated"
+msgstr ""
+
+#: vgb_blog/templates/blog/detail.html:25
+msgid "Filed under"
+msgstr ""
+
+#: vgb_blog/templates/blog/detail.html:36
+#: vgb_blog/templates/blog/snippets/footer.html:24
+msgid "About"
+msgstr ""
+
+#: vgb_blog/templates/blog/detail.html:44
+msgid "Read next"
+msgstr ""
+
+#: vgb_blog/templates/blog/index.html:13
+msgid "Trending"
+msgstr ""
+
+#: vgb_blog/templates/blog/index.html:27
+msgid "Latest"
+msgstr ""
+
+#: vgb_blog/templates/blog/index.html:44
+msgid "Reading time 9 mins"
+msgstr ""
+
+#: vgb_blog/templates/blog/search.html:21
+msgid "Result"
+msgstr ""
+
+#: vgb_blog/templates/blog/search.html:27
+msgid "newest"
+msgstr ""
+
+#: vgb_blog/templates/blog/search.html:32
+msgid "oldest"
+msgstr ""
+
+#: vgb_blog/templates/blog/search.html:37
+msgid "relevancy"
+msgstr ""
+
+#: vgb_blog/templates/blog/search.html:52
+msgid "By"
+msgstr ""
+
+#: vgb_blog/templates/blog/search.html:55
+msgid "Last updated"
+msgstr ""
+
+#: vgb_blog/templates/blog/search.html:67
+msgid "No results found"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/donate.html:2
+msgid "Support Us"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/footer.html:18
+#: vgb_blog/templates/blog/snippets/footer.html:29
+#: vgb_blog/templates/blog/snippets/footer.html:40
+msgid "Section"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/footer.html:20
+msgid "Home"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/footer.html:21
+msgid "Features"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/footer.html:22
+msgid "Pricing"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/footer.html:23
+msgid "FAQs"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/navbar.html:9
+msgid "RSS Subscribe"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/navbar.html:12
+msgid "VGB Blog"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/navbar.html:16
+msgid "Search"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/navbar.html:19
+#: vgb_blog/templates/blog/tag_snippets/categories.html:4
+msgid "Categories"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/navbar.html:32
+msgid "Archive Search"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/navbar.html:46
+msgid "Close"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/pagination.html:5
+msgid "Previous"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/pagination.html:11
+msgid "Next"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/sidebar.html:13
+msgid "Similar Posts"
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/sidebar.html:19
+msgid "This post does not assimilate any other."
+msgstr ""
+
+#: vgb_blog/templates/blog/snippets/social_media.html:4
+msgid "Social"
+msgstr ""
+
+#: vgb_blog/templates/blog/tag_snippets/archives.html:4
+msgid "Archives"
+msgstr ""
+
+#: vgb_blog/templates/blog/tag_snippets/latest_posts.html:4
+msgid "Latest Posts"
+msgstr ""

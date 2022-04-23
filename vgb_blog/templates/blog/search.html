@@ -18,23 +18,23 @@
         {{ search_form }} <!-- TODO Make it have the query search term preloaded -->
       </form>
       <div id="results" class="d-flex align-items-center justify-content-between">
-        <h2 class="pb-3 border-0"><span>{{ total_results }}</span> Result{{ total_results|pluralize }}</h2>
+        <h2 class="pb-3 border-0"><span>{{ total_results }}</span> {% trans 'Result' %}{{ total_results|pluralize }}</h2>
         
         {% if normal_search %}
         <ul class="list-group list-group-horizontal">
           <li class="list-group-item">
             <a href="?order_by=newest">
-              <small>newest</small>
+              <small>{% trans 'newest' %}</small>
             </a>
           </li>
           <li class="list-group-item">
             <a href="?order_by=oldest">
-              <small>oldest</small>
+              <small>{% trans 'oldest' %}</small>
             </a>
           </li>
           <li class="list-group-item">
             <a href="?order_by=relevancy">
-              <small>relevancy</small>
+              <small>{% trans 'relevancy' %}</small>
             </a>
           </li>
         </ul>
@@ -49,10 +49,10 @@
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
-              <h6 class="card-title text-muted fw-normal">By <span class="fw-bold">{{ post.author|capfirst }}</span> | {{ post.publish|date:"F j Y | h:i a "}}</h6>
+              <h6 class="card-title text-muted fw-normal">{% trans 'By' %} <span class="fw-bold">{{ post.author|capfirst }}</span> | {{ post.publish|date:"F j Y | h:i a "}}</h6>
               <p class="card-text">{{ post.body|truncatewords:30 }}</p>
               {% if post.has_been_updated %}
-                <p class="card-text"><small class="text-muted">Last updated {{ post.updated|naturaltime }}</small></p>
+                <p class="card-text"><small class="text-muted">{% trans 'Last updated' %} {{ post.updated|naturaltime }}</small></p>
               {% endif %}
             </div>
           </div>
@@ -64,7 +64,7 @@
       {% endif %}
   
       {% empty %}
-        <p>No results found</p>
+        <p>{% trans 'No results found' %}</p>
       {% endfor %}
 
       {% include 'blog/snippets/pagination.html' with page=page %}
