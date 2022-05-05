@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-22 19:20+0000\n"
+"POT-Creation-Date: 2022-05-04 12:43-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +18,68 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: vgb_blog/models.py:23
+msgid "name"
+msgstr ""
+
+#: vgb_blog/models.py:24
+msgid "slug"
+msgstr ""
+
+#: vgb_blog/models.py:26
+msgid "color"
+msgstr ""
+
+#: vgb_blog/models.py:29 vgb_blog/models.py:51
+msgid "category"
+msgstr ""
+
+#: vgb_blog/models.py:30
+msgid "categories"
+msgstr ""
+
+#: vgb_blog/models.py:34
+msgid "Draft"
+msgstr ""
+
+#: vgb_blog/models.py:35
+msgid "Published"
+msgstr ""
+
 #: vgb_blog/models.py:39
 msgid "title"
+msgstr ""
+
+#: vgb_blog/models.py:43
+msgid "author"
+msgstr ""
+
+#: vgb_blog/models.py:44
+msgid "publish"
+msgstr ""
+
+#: vgb_blog/models.py:45
+msgid "created"
+msgstr ""
+
+#: vgb_blog/models.py:46
+msgid "updated"
+msgstr ""
+
+#: vgb_blog/models.py:47
+msgid "status"
+msgstr ""
+
+#: vgb_blog/models.py:50
+msgid "tags"
+msgstr ""
+
+#: vgb_blog/models.py:54
+msgid "post"
+msgstr ""
+
+#: vgb_blog/models.py:55
+msgid "posts"
 msgstr ""
 
 #: vgb_blog/templates/blog/detail.html:19

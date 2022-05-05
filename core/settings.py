@@ -30,7 +30,7 @@ DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 1
+SITE_ID = 2
 
 
 # Application definition
@@ -59,6 +59,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -129,7 +130,7 @@ LANGUAGES = (
 )
 
 PARLER_LANGUAGES = {
-    None: (
+    2: (
         {'code': 'en'},
         {'code': 'es'},
     ),
@@ -144,7 +145,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'vgb_blog', 'locale'),
 )
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Kentucky/Louisville'
 
 USE_I18N = True
 

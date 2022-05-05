@@ -16,14 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.sitemaps.views import sitemap
+from django.conf.urls.i18n import i18n_patterns
+
 from vgb_blog.sitemaps import PostSitemap
+
 
 sitemaps = {
     'posts': PostSitemap
 }
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
     path('blog/', include('vgb_blog.urls', namespace='blog')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sjango.contrib.sitemaps.views.sitemap')
-]
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sjango.contrib.sitemaps.views.sitemap'),
+    path('rosetta/', include('rosetta.urls')),
+)

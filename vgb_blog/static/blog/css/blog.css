@@ -1,7 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Pattaya&display=swap");
+
 body {
     margin: 0;
     padding: 0;
-    font-family: helvetica, sans-serif;
+    font-family: "Fira Sans", sans-serif;
+    font-weight: 400;
+}
+
+.header {
+    font-family: "Pattaya", sans-serif;
+}
+
+.bh {
+    font-family: "Abril Fatface", cursive;
 }
 
 a {

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from parler.models import TranslatableModel, TranslatedFields
+from parler.models import TranslatableModel, TranslatedFields, TranslatableManager
 from taggit.managers import TaggableManager
 
 # Create your models here.
@@ -13,45 +13,50 @@ def upload_path(instance, filename):
     return os.path.join('blog', instance.blog.title, filename)
 
 
-class PublishedManager(models.Manager):
+class PublishedManager(TranslatableManager):
     def get_queryset(self):
         return super(PublishedManager, self).get_queryset().filter(status='published')
     
     
 class Category(TranslatableModel):
     translations = TranslatedFields(
-        name = models.CharField(max_length=20, db_index=True),
-        slug = models.SlugField(max_length=20, unique=True),
+        name = models.CharField(_('name'), max_length=20, db_index=True),
+        slug = models.SlugField(_('slug'), max_length=20, unique=True),
     )
-    tag_color = models.CharField(max_length=6, unique=True)
+    tag_color = models.CharField(_('color'), max_length=6, unique=True)
 
     class Meta:
-        verbose_name = 'category'
-        verbose_name_plural = 'categories'
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
+        
+    def __str__(self):
+        return self.name
+    
 
 class Post(TranslatableModel):
     STATUS_CHOICES = (
-        ('draft', 'Draft'),
-        ('published', 'Published'),
+        ('draft', _('Draft')),
+        ('published', _('Published')),
     )
     
     translations = TranslatedFields(
-        title = models.CharField(_('title'), max_length=250),
-        slug = models.SlugField(max_length=250, unique_for_date='publish'),
-        body = models.TextField(),
+        title = models.CharField(_('title'), max_length=250, unique=True),
+        slug = models.SlugField(_('slug'), max_length=250),
+        body = models.TextField(_('body')),
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
-    publish = models.DateTimeField(default=timezone.now)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-    objects = models.Manager()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts', verbose_name=_('author'))
+    publish = models.DateTimeField(_('publish'), default=timezone.now)
+    created = models.DateTimeField(_('created'), auto_now_add=True)
+    updated = models.DateTimeField(_('updated'), auto_now=True)
+    status = models.CharField(_('status'), max_length=10, choices=STATUS_CHOICES, default='draft')
+    tags = TaggableManager(_('tags')),
+    objects = TranslatableManager()
     published = PublishedManager()
-    tags = TaggableManager()
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='posts', null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='posts', null=True, verbose_name=_('category'))
 
     class Meta:
-        ordering = ('-publish',)
+        verbose_name = _('post')
+        verbose_name_plural = _('posts')
 
     def __str__(self):
         return self.title
