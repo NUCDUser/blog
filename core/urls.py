@@ -27,7 +27,7 @@ sitemaps = {
 
 urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
-    path('blog/', include('vgb_blog.urls', namespace='blog')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sjango.contrib.sitemaps.views.sitemap'),
     path('rosetta/', include('rosetta.urls')),
+    path('', include('vgb_blog.urls', namespace='blog')),
 )

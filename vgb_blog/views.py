@@ -5,13 +5,12 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView, TemplateView, View
 from django.core.mail import send_mail
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from django.utils.text import slugify
+from django.utils.translation import get_language_from_request
 
-from taggit.models import Tag
-
-from .models import Post, Comment
+from .models import Category, Post, Comment, Tag
 from .forms import EmailPostForm, CommentForm, SearchForm
 
 class CustomPaginator(Paginator):
@@ -30,13 +29,16 @@ def slug_to_string(slug):
 # Create your views here.
 class Index(ListView):
     template_name = 'blog/index.html'
-    model = Post
     context_object_name = 'posts'
     paginate_by = 6
+    
+    def get_queryset(self):
+        return Post.published.order_by('publish')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search_form'] = SearchForm()
+        context['headline_posts'] = Post.published.order_by('created')[:3]
         return context
     
 
@@ -54,12 +56,15 @@ class SearchView(ListView):
     searching_tags = False
     searching_text = False
     searching_category = False
+    language = None
     
     def get_queryset(self):
+        self.language = get_language_from_request(self.request)
         if 'query' in self.kwargs:
             self.searching_text = True
             self.query_keyword = self.kwargs['query']
-            base_query = Post.published.annotate(similarity=TrigramSimilarity('title', self.query_keyword)).filter(similarity__gt=0.1)
+            base_query = Post.published.language(self.language).annotate(similarity=TrigramSimilarity('translations__title', self.query_keyword)).filter(similarity__gt=0.1)
+            print(base_query, "HERE", self.language)
             if 'order_by' not in self.request.GET or self.request.GET['order_by'] == 'relevance':
                 return base_query.order_by('-similarity')
             queryset = self._order_by(base_query)
@@ -75,7 +80,8 @@ class SearchView(ListView):
             self.query_keyword = self.kwargs['tag_name']
             try:
                 tag = Tag.objects.get(slug=self.query_keyword)
-                base_query = Post.published.all().filter(tags__in=[tag])
+                print(tag)
+                base_query = Post.published.language(self.language).all().filter(tags__in=[tag])
             except ObjectDoesNotExist:
                 return Post.objects.none()
             queryset = self._order_by(base_query)
@@ -84,10 +90,14 @@ class SearchView(ListView):
         elif 'category' in self.kwargs:
             self.searching_category = True
             self.query_keyword = self.kwargs['category']
-            base_query = Post.published.filter(category__iexact=self.query_keyword.replace(' ', '_'))
-            queryset = self._order_by(base_query)
-            return queryset
-            
+            try:
+                category_object = Category.objects.get(translations__name=self.query_keyword)
+                base_query = Post.published.filter(category=category_object)
+                queryset = self._order_by(base_query)
+                return queryset
+            except Exception as e:
+                print(e)
+                return Post.objects.none()
         else:
             return Post.objects.none()
     
@@ -138,7 +148,7 @@ class Detail(View):
     total_similar_posts = 4
     
     def get(self, request, year, month, day, post):
-        post = get_object_or_404(Post, slug=post, status='published', publish__year=year, publish__month=month, publish__day=day)        
+        post = get_object_or_404(Post, translations__slug=post, status='published', publish__year=year, publish__month=month, publish__day=day)        
         post_tags_ids = post.tags.values_list('id', flat=True)
         similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
         similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:self.total_similar_posts]

@@ -12,13 +12,29 @@
           <a class="blog-header-logo text-dark bh" href="{% url 'blog:index' %}"><h1 class="m-0 p-0 border-bottom-0">{% trans 'VGB Blog' %}</h1></a>
         </div>
         <div class="col-4 d-flex justify-content-end align-items-center">
-          <button type="button" class="btn link-secondary border-0" aria-label="Search" id="search-button">
+          <button type="button" class="btn link-outline-secondary border-0 me-1" aria-label="Search" id="search-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>{% trans 'Search' %}</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
           </button>
-          <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#Modal">
-            {% trans 'Categories' %}
-          </button>
-        </div>
+          <div class="dropdown">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            <button class="btn btn-outline-secondary dropdown-toggle me-1" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ LANGUAGE_CODE }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              {% for language in languages %}
+              <li>
+                <a class="dropdown-item" href="/{{ language.code }}/">
+                  {{ language.name_local|capfirst }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#Modal">
+          {% trans 'Categories' %}
+        </button>
       </div>
     </header>
   </div>
@@ -38,7 +54,7 @@
             {% get_archive_dates %}
           </div>
           <div class="col-6">
-            {% get_categories %}
+            {% get_categories LANGUAGE_CODE %}
           </div>
         </div>
       </div>

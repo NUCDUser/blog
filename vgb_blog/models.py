@@ -1,17 +1,32 @@
 import os
+from pyexpat import model
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from parler.models import TranslatableModel, TranslatedFields, TranslatableManager
+
+from parler.models import TranslatableModel, TranslatedFields, TranslatableManager, TranslatedField, TranslatedFieldsModel
 from taggit.managers import TaggableManager
+from taggit.models import TagBase, GenericTaggedItemBase
 
 # Create your models here.
 def upload_path(instance, filename):
     return os.path.join('blog', instance.blog.title, filename)
 
+
+class Tag(TagBase):
+    pass
+        
+
+class TaggedPost(GenericTaggedItemBase):
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_items",
+    )
+    
 
 class PublishedManager(TranslatableManager):
     def get_queryset(self):
@@ -44,12 +59,12 @@ class Post(TranslatableModel):
         slug = models.SlugField(_('slug'), max_length=250),
         body = models.TextField(_('body')),
     )
+    tags = TaggableManager(_('tags'), through=TaggedPost)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts', verbose_name=_('author'))
     publish = models.DateTimeField(_('publish'), default=timezone.now)
     created = models.DateTimeField(_('created'), auto_now_add=True)
     updated = models.DateTimeField(_('updated'), auto_now=True)
     status = models.CharField(_('status'), max_length=10, choices=STATUS_CHOICES, default='draft')
-    tags = TaggableManager(_('tags')),
     objects = TranslatableManager()
     published = PublishedManager()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='posts', null=True, verbose_name=_('category'))
@@ -66,6 +81,7 @@ class Post(TranslatableModel):
     
     def has_been_updated(self):
         return True if self.created != self.updated else False
+    
     
 class PostImages(models.Model):
     name = models.CharField(max_length=64)

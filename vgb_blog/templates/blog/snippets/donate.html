@@ -1,8 +1,12 @@
+{% load i18n %}
+
 <div class="p-4">
   <h4 class="fst-italic text-center">{% trans 'Support Us' %}</h4>
   <p class="text-center">
-    {% trans 'Like our content and would love to support us?
-    Help us keep this content ad-free.' %}
+    {% blocktrans %}
+      Like our content and would love to support us?
+      Help us keep this content ad-free.
+    {% endblocktrans %}
   </p>
   <div id="donate-button-container" class="d-flex align-items-center justify-content-center">
     <div id="donate-button"></div>

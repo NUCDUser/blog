@@ -15,7 +15,7 @@ searchForm.onsubmit = function (e) {
             .slice(1)
             .replaceAll(" ", "-")
             .toLowerCase();
-        let tagUrl = `/blog/search/tag/${newValue}`;
+        let tagUrl = `/search/tag/${newValue}`;
         window.location.assign(tagUrl);
         return;
     } else if (searchInput.value.startsWith("@")) {
@@ -23,11 +23,11 @@ searchForm.onsubmit = function (e) {
             .slice(1)
             .replaceAll(" ", "_")
             .toLowerCase();
-        let tagUrl = `/blog/search/category/${newValue}`;
+        let tagUrl = `/search/category/${newValue}`;
         window.location.assign(tagUrl);
         return;
     }
-    let tagUrl = `/blog/search/${searchInput.value}`;
+    let tagUrl = `/search/${searchInput.value}`;
     window.location.assign(tagUrl);
     return;
 };

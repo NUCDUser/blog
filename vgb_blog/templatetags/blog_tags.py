@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.utils.safestring import mark_safe
 from django.db.models.functions import TruncMonth, TruncYear
 
-from ..models import Post
+from ..models import Post, Category
 
 register = template.Library()
 
@@ -49,10 +49,7 @@ def get_archive_dates(month_limit=12):
 
 
 @register.inclusion_tag('blog/tag_snippets/categories.html')
-def get_categories(max_categories=99):
+def get_categories(lang, max_categories=99):
     '''Gets only the active categories list from the full CATEGORIES_CHOICES'''
-    categories = Post.published.distinct('category').values_list('category', flat=True).order_by()
-    choices_list = dict(Post.CATEGORIES_CHOICES)
-    print(categories)
-    active_categories = sorted(tuple((category, choices_list.get(category)) for category in categories))
-    return {'categories': active_categories}
+    categories = Category.objects.language(lang).all()
+    return {'categories': categories}
