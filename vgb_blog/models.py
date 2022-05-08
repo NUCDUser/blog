@@ -1,13 +1,13 @@
 import os
-from pyexpat import model
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 
-from parler.models import TranslatableModel, TranslatedFields, TranslatableManager, TranslatedField, TranslatedFieldsModel
+from parler.models import TranslatableModel, TranslatedFields, TranslatableManager
 from taggit.managers import TaggableManager
 from taggit.models import TagBase, GenericTaggedItemBase
 
@@ -15,6 +15,16 @@ from taggit.models import TagBase, GenericTaggedItemBase
 def upload_path(instance, filename):
     return os.path.join('blog', instance.blog.title, filename)
 
+
+class Author(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='author')
+    image = models.ImageField(_('image'))
+
+    def get_full_name(self):
+        if self.user.first_name:
+            return f'{self.user.first_name} {self.user.last_name}'
+        return 'Annonimous Author'
+        
 
 class Tag(TagBase):
     pass

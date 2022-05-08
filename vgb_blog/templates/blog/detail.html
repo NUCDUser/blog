@@ -18,6 +18,7 @@
           <small>By <a href="#">{{ post.author|capfirst }}</a></small>
           <small>{{ post.publish|date:"F j, Y | h:i a"}}{% if has_been_updated %} | {% trans 'Updated' %} {{ post.updated|naturaltime }}{% endif %}</small>
         </div>
+        <img src="{{ post.images.first.image.url }}" alt="post image" width="100%">
         <p>{{ post.body|markdown }}</p>
       </article>
       
