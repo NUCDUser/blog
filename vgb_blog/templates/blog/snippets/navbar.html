@@ -5,16 +5,7 @@
   <div class="container-md">
     <header class="blog-header py-3">
       <div class="row flex-nowrap justify-content-between align-items-center">
-        <div class="col-4 pt-1">
-          <a class="link-secondary" href="{% url 'blog:post_feed' %}">{% trans 'RSS Subscribe' %}</a>
-        </div>
-        <div class="col-4 text-center">
-          <a class="blog-header-logo text-dark bh" href="{% url 'blog:index' %}"><h1 class="m-0 p-0 border-bottom-0">{% trans 'VGB Blog' %}</h1></a>
-        </div>
-        <div class="col-4 d-flex justify-content-end align-items-center">
-          <button type="button" class="btn link-outline-secondary border-0 me-1" aria-label="Search" id="search-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>{% trans 'Search' %}</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
-          </button>
+        <div class="col-4 d-flex align-items-center">
           <div class="dropdown">
             {% get_current_language as LANGUAGE_CODE %}
             {% get_available_languages as LANGUAGES %}
@@ -32,9 +23,18 @@
               {% endfor %}
             </ul>
           </div>
-        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#Modal">
-          {% trans 'Categories' %}
-        </button>
+        </div>
+        <div class="col-4 text-center">
+          <a class="blog-header-logo text-dark bh" href="{% url 'blog:index' %}"><h1 class="m-0 p-0 border-bottom-0">{% trans 'VGB Blog' %}</h1></a>
+        </div>
+        <div class="col-4 d-flex justify-content-end align-items-center">
+          <button type="button" class="btn link-outline-secondary border-0 me-1" aria-label="Search" id="search-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>{% trans 'Search' %}</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
+          </button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#Modal">
+            {% trans 'Menu' %}
+          </button>
+        </div>
       </div>
     </header>
   </div>
@@ -59,6 +59,12 @@
         </div>
       </div>
       <div class="modal-footer">
+        <a class="link-secondary me-auto" href="{% url 'blog:post_feed' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-rss-fill mb-1" viewBox="0 0 16 16">
+            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm1.5 2.5c5.523 0 10 4.477 10 10a1 1 0 1 1-2 0 8 8 0 0 0-8-8 1 1 0 0 1 0-2zm0 4a6 6 0 0 1 6 6 1 1 0 1 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1 0-2zm.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+          </svg>
+          {% trans 'RSS feed' %} 
+        </a>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
       </div>
     </div>

@@ -2,34 +2,15 @@
 {% load i18n %}
 
 <div class="col-md-4">
-  <div class="position-sticky" style="top: 2rem;">
-    <div class="p-4 mb-3">
-      <h4 class="fst-italic">{% trans 'Popular' %}</h4>
-      <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
-    </div>
+  <div class="position-sticky text-center text-md-start" style="top: 2rem;">
+    {% get_current_language as LANGUAGE_CODE %}
 
-    {% if similar_posts %}
-      <div class="p-4">
-        <h4 class="fst-italic">{% trans 'Similar Posts' %}</h4>
-        {% for post in similar_posts %}
-          <p class="mb-0">
-            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-          </p>
-        {% empty %}
-          <p class="mb-0">{% trans 'This post does not assimilate any other.' %}</p>
-        {% endfor %}
-      </div>
-    {% endif %}
+    {% get_popular_posts LANGUAGE_CODE %}
 
     {% show_latest_posts %}
 
-    {% get_current_language as LANGUAGE_CODE %}
     {% get_categories LANGUAGE_CODE %}
 
     {% get_archive_dates %}
-
-    {% include 'blog/snippets/social_media.html' %}
-
-    {% include 'blog/snippets/donate.html' %}
   </div>
 </div>

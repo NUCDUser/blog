@@ -1,39 +1,34 @@
 const searchBar = document.querySelector("#search-bar");
 const searchButton = document.querySelector("#search-button");
-const searchForm = document.querySelector("#search-form");
 const searchInput = document.querySelector("#search-input");
 
-let searchOpen = false;
+let searchBarOpen = false;
 
 searchButton.onclick = function () {
-    if (searchOpen) {
+    if (searchBarOpen) {
         searchBar.style.transform = "translateY(-70px)";
-        searchOpen = false;
+        searchBarOpen = false;
         return;
     }
     searchBar.style.transform = "translateY(0)";
     searchInput.focus();
-    searchOpen = true;
+    searchBarOpen = true;
 };
 
-searchForm.onsubmit = function (e) {
-    e.preventDefault();
-    if (searchInput.value.startsWith("#")) {
-        let newValue = searchInput.value
-            .slice(1)
-            .replaceAll(" ", "-")
-            .toLowerCase();
-        let tagUrl = `/search/tag/${newValue}`;
-        window.location.assign(tagUrl);
-    } else if (searchInput.value.startsWith("@")) {
-        let newValue = searchInput.value
-            .slice(1)
-            .replaceAll(" ", "_")
-            .toLowerCase();
-        let tagUrl = `/search/category/${newValue}`;
-        window.location.assign(tagUrl);
-        return;
-    }
-    let tagUrl = `/search/${searchInput.value}`;
-    window.location.assign(tagUrl);
-};
+const headlineCarousel = document.querySelector("#headlineCarousel");
+const carouselIndicators = document.querySelector(".carousel-indicators");
+const carouselNext = document.querySelector(".carousel-control-next");
+const carouselPrev = document.querySelector(".carousel-control-prev");
+const carouselControls = [carouselIndicators, carouselNext, carouselPrev];
+
+headlineCarousel.addEventListener("mouseenter", function () {
+    carouselControls.forEach((e) => {
+        e.style.opacity = 1;
+    });
+});
+
+headlineCarousel.addEventListener("mouseleave", function () {
+    carouselControls.forEach((e) => {
+        e.style.opacity = 0;
+    });
+});

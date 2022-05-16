@@ -1,29 +1,37 @@
 import os
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.core.validators import RegexValidator
 
 
 from parler.models import TranslatableModel, TranslatedFields, TranslatableManager
 from taggit.managers import TaggableManager
 from taggit.models import TagBase, GenericTaggedItemBase
 
-# Create your models here.
+
 def upload_path(instance, filename):
     return os.path.join('blog', instance.blog.title, filename)
 
 
+# Custom validators
+hex_validator = RegexValidator(r'^[0-9A-F]*$')
+
 class Author(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='author')
     image = models.ImageField(_('image'))
+    short_bio = models.TextField(_('short bio'))
+    credentials = models.CharField(_('credentials'), max_length=64)
 
     def get_full_name(self):
         if self.user.first_name:
             return f'{self.user.first_name} {self.user.last_name}'
         return 'Annonimous Author'
+    
+    def __str__(self):
+        return self.get_full_name()
         
 
 class Tag(TagBase):
@@ -42,13 +50,15 @@ class PublishedManager(TranslatableManager):
     def get_queryset(self):
         return super(PublishedManager, self).get_queryset().filter(status='published')
     
-    
+
+
+
 class Category(TranslatableModel):
     translations = TranslatedFields(
         name = models.CharField(_('name'), max_length=20, db_index=True),
         slug = models.SlugField(_('slug'), max_length=20, unique=True),
     )
-    tag_color = models.CharField(_('color'), max_length=6, unique=True)
+    tag_color = models.CharField(_('color'), max_length=6, unique=False, validators=[hex_validator], error_messages={'invalid': 'This value needs to be a hexadecimal color value'})
 
     class Meta:
         verbose_name = _('category')
@@ -70,7 +80,7 @@ class Post(TranslatableModel):
         body = models.TextField(_('body')),
     )
     tags = TaggableManager(_('tags'), through=TaggedPost)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts', verbose_name=_('author'))
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='blog_posts', verbose_name=_('author'))
     publish = models.DateTimeField(_('publish'), default=timezone.now)
     created = models.DateTimeField(_('created'), auto_now_add=True)
     updated = models.DateTimeField(_('updated'), auto_now=True)
@@ -78,6 +88,7 @@ class Post(TranslatableModel):
     objects = TranslatableManager()
     published = PublishedManager()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='posts', null=True, verbose_name=_('category'))
+    visits = models.IntegerField(_('visits'))
 
     class Meta:
         verbose_name = _('post')
@@ -91,6 +102,11 @@ class Post(TranslatableModel):
     
     def has_been_updated(self):
         return True if self.created != self.updated else False
+    
+    def get_thumbnail_url(self):
+        if self.images:
+            return self.images.first().image.url
+        return None
     
     
 class PostImages(models.Model):
@@ -117,3 +133,7 @@ class Comment(models.Model):
         
     def __str__(self):
         return f'Comment by {self.name} on {self.post}'
+    
+    
+class NewsletterSubscriber(models.Model):
+    email = models.EmailField(_('email'))

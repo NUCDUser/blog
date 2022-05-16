@@ -24,12 +24,15 @@
     <div class="carousel-inner">
       {% for headline in headlines %}
       <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %}">
-        <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
-          <div class="col-md-6 px-0">
-            <h1 class="display-4 fst-italic header">{{ headline.title }}</h1>
-            <p class="lead my-3">{{ headline.body|truncatewords:22 }}</p>
-            <p class="lead mb-0"><a href="{{ headline.get_absolute_url }}" class="text-white fw-bold">{% trans 'Continue reading...' %}</a></p>
-          </div>
+        <!-- <div class="background-image position-absolute" style="background-image: url({{ headline.get_thumbnail_url }}); filter: blur(10px); z-index: -1;"></div> -->
+        <div class="p-4 p-md-5 mb-4 text-white rounded" style="background-image: url({{ headline.get_thumbnail_url }});">
+          <a href="{{ headline.get_absolute_url }}" class="text-white">
+            <div class="col-md-6 p-3" style="background-color: rgba(0,0,0,0.8);">
+              <h1 class="display-4 fst-italic header">{{ headline.title }}</h1>
+              <p class="lead my-3">{{ headline.body|truncatewords:22 }}</p>
+              <p class="lead mb-0"><span class="text-white fw-bold">{% trans 'Continue reading...' %}</span></p>
+            </div>
+          </a>
         </div>
       </div>
       {% endfor %}
@@ -63,23 +66,12 @@
           <img src="{{ image.image.url }}" alt="post image" height="225" width="100%">
           {% endfor %}
           <div class="card-body">
-            <h6 class="card-title fw-bold">{% post_tags post %} - <span class="text-muted fw-lighter">{{ post.publish|date:"F j Y"}}</span></h6>
-            <h5 class="card-title fw-bold"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+            <div>
+              <span class="card-title text-light d-inline-block">{% post_tags post %}</span> - <span class="text-muted fw-lighter text-end d-inline-block">{{ post.publish|date }}</span>
+            </div>
+            <h3 class="card-title fw-bold"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
             <p class="card-text text-muted">{{ post.body|truncatewords:22 }}</p>
             <small class="card-text text-muted">{% trans 'Reading time 9 mins' %}</small>
-          </div>
-          <div class="card-footer">
-              <div class="row g-0">
-                <div class="col-md-2 d-flex justify-content-center align-items-center">
-                  <img src="{% static 'blog/img/profile.jpeg' %}" class="rounded-circle" alt="author picture" width="64px" height="64px">
-                </div>
-                <div class="col-md-10">
-                  <div class="card-body">
-                    <h5 class="card-title fw-bold mb-0">{{ post.author.name }}</h5>
-                    <p class="card-text text-muted">Title</p>
-                  </div>
-                </div>
-              </div>
           </div>
         </div>
       </div>
@@ -87,4 +79,7 @@
 
     </div>
   </div>
+
+  <script src="{% static 'blog/js/main.js' %}" defer></script>
+
 {% endblock %}

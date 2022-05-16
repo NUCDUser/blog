@@ -5,7 +5,7 @@
 {% load blog_tags %}
 {% load i18n %}
 
-{% block title %}TODO TITLE{% endblock %}
+{% block title %}{% trans 'VGB Blog' %}|{{ search_criteria|capfirst }}: {{ search_query }}{% endblock %}
 {% block content %}
 <div class="container-md pt-5">
   <div class="row g-5"> 
@@ -44,14 +44,14 @@
       {% for post in results %}
       <div class="card mb-3 border-0">
         <div class="row g-0">
-          <div class="col-md-4">
-            <img src="{% static 'blog/img/profile.jpeg' %}" class="img-fluid rounded-start" alt="placeholder">
+          <div class="col-md-4 d-flex">
+            <img src="{{ post.get_thumbnail_url }}" class="img-fluid align-self-center" alt="{{ post.title }} image" height="225" width="100%">
           </div>
           <div class="col-md-8">
             <div class="card-body">
               <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
-              <h6 class="card-title text-muted fw-normal">{% trans 'By' %} <span class="fw-bold">{{ post.author|capfirst }}</span> | {{ post.publish|date:"F j Y | h:i a "}}</h6>
-              <p class="card-text">{{ post.body|truncatewords:30 }}</p>
+              <h6 class="card-title text-muted fw-normal">{% trans 'By' %} <span class="fw-bold">{{ post.author|capfirst }}</span> | {{ post.publish }}</h6>
+              <p class="card-text">{{ post.body|truncatewords:22 }}</p>
               {% if post.has_been_updated %}
                 <p class="card-text"><small class="text-muted">{% trans 'Last updated' %} {{ post.updated|naturaltime }}</small></p>
               {% endif %}
@@ -75,9 +75,7 @@
     {% include 'blog/snippets/sidebar.html' %}
   </div>
 </div>
-{% endblock content %}
 
-{% block script %}
-  <script src="{% static 'blog/js/search.js' %}" defer></script>
-{% endblock script %}
+<script src="{% static 'blog/js/search.js' %}" defer></script>
+{% endblock content %}
   

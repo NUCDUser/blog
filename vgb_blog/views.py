@@ -1,17 +1,16 @@
 
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import ListView, TemplateView, View
+from django.views.generic import ListView, View
 from django.core.mail import send_mail
-from django.db.models import Count, Q
+from django.db.models import Count
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
-from django.utils.text import slugify
-from django.utils.translation import get_language_from_request
+from django.utils.translation import get_language_from_request, gettext_lazy as _
 
-from .models import Category, Post, Comment, Tag
-from .forms import EmailPostForm, CommentForm, SearchForm
+from .models import Category, Post, Tag
+from .forms import EmailPostForm, SearchForm, NewsletterForm
 
 class CustomPaginator(Paginator):
     def validate_number(self, number):
@@ -26,7 +25,7 @@ class CustomPaginator(Paginator):
 def slug_to_string(slug):
     return slug.replace('-', ' ')
 
-# Create your views here.
+
 class Index(ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
@@ -53,18 +52,14 @@ class SearchView(ListView):
     context_object_name = 'results'
     paginator_class = CustomPaginator
     query_keyword = None
-    searching_tags = False
-    searching_text = False
-    searching_category = False
     language = None
+    search_criteria = None
     
     def get_queryset(self):
         self.language = get_language_from_request(self.request)
         if 'query' in self.kwargs:
-            self.searching_text = True
             self.query_keyword = self.kwargs['query']
             base_query = Post.published.language(self.language).annotate(similarity=TrigramSimilarity('translations__title', self.query_keyword)).filter(similarity__gt=0.1)
-            print(base_query, "HERE", self.language)
             if 'order_by' not in self.request.GET or self.request.GET['order_by'] == 'relevance':
                 return base_query.order_by('-similarity')
             queryset = self._order_by(base_query)
@@ -76,7 +71,6 @@ class SearchView(ListView):
             return queryset
         
         elif 'tag_name' in self.kwargs:
-            self.searching_tags = True
             self.query_keyword = self.kwargs['tag_name']
             try:
                 tag = Tag.objects.get(slug=self.query_keyword)
@@ -88,7 +82,6 @@ class SearchView(ListView):
             return queryset
         
         elif 'category' in self.kwargs:
-            self.searching_category = True
             self.query_keyword = self.kwargs['category']
             try:
                 category_object = Category.objects.get(translations__name=self.query_keyword)
@@ -108,6 +101,7 @@ class SearchView(ListView):
         context['search_form'] = self._search_form_setup()
         context['total_results'] = self.object_list.count()
         context['page'] = self._paginator_setup()
+        context['search_criteria'] = self.search_criteria
         return context
     
     def _order_by(self, base_query):
@@ -126,11 +120,11 @@ class SearchView(ListView):
         Depending on the search, a placeholder for the form will be initialized
         reflecting the search term
         '''
-        if self.searching_text:
+        if self.search_criteria == _('search'):
             placeholder = self.kwargs['query']
-        elif self.searching_category:
+        elif self.search_criteria == _('category'):
             placeholder = '@' + self.kwargs['category']
-        elif self.searching_tags:
+        elif self.search_criteria == _('tag'):
             placeholder = '#' + self.kwargs['tag_name']
         else:
             placeholder = ''
@@ -145,10 +139,12 @@ class SearchView(ListView):
 
 class Detail(View):
     template_name = 'blog/detail.html'
-    total_similar_posts = 4
+    total_similar_posts = 3
     
     def get(self, request, year, month, day, post):
-        post = get_object_or_404(Post, translations__slug=post, status='published', publish__year=year, publish__month=month, publish__day=day)        
+        post = get_object_or_404(Post, translations__slug=post, status='published', publish__year=year, publish__month=month, publish__day=day)
+        post.visits += 1
+        post.save(update_fields=['visits'])
         post_tags_ids = post.tags.values_list('id', flat=True)
         similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
         similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:self.total_similar_posts]
@@ -158,35 +154,6 @@ class Detail(View):
             'search_form': SearchForm(),
         }
         return render(request, self.template_name, context)
-
-
-# def post_detail(request, year, month, day, post):
-#     post = get_object_or_404(Post, slug=post, status='published', publish__year=year, publish__month=month, publish__day=day)
-#     comments = post.comments.filter(active=True)
-    
-#     new_comment = None
-    
-#     if request.method == 'POST':
-#         comment_form = CommentForm(data=request.POST)
-#         if comment_form.is_valid():
-#             new_comment = comment_form.save(commit=False)
-#             new_comment.post = post
-#             new_comment.save()
-#     else:
-#         comment_form = CommentForm()
-        
-#     post_tags_ids = post.tags.values_list('id', flat=True) # Returns a list of tag IDs
-#     similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
-#     similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
-            
-#     context = {
-#         'post': post,
-#         'comments': comments,
-#         'new_comment': new_comment,
-#         'comment_form': comment_form,
-#         'similar_posts': similar_posts,
-#     }
-#     return render(request, 'blog/detail.html', context)
 
 
 def post_share(request, post_id):

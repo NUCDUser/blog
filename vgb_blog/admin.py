@@ -1,7 +1,7 @@
 from django.contrib import admin
 from parler.admin import TranslatableAdmin
 
-from .models import Category, Post, Comment, PostImages, Tag, TaggedPost
+from .models import Category, Post, Comment, PostImages, Tag, Author
 
 # Register your models here.
 class PostImagesAdmin(admin.StackedInline):
@@ -39,3 +39,4 @@ class CommentAdmin(admin.ModelAdmin):
     
     
 admin.site.register(Tag)
+admin.site.register(Author)

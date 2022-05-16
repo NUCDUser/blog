@@ -53,3 +53,10 @@ def get_categories(lang, max_categories=99):
     '''Gets only the active categories list from the full CATEGORIES_CHOICES'''
     categories = Category.objects.language(lang).all()
     return {'categories': categories}
+
+
+@register.inclusion_tag('blog/tag_snippets/popular.html')
+def get_popular_posts(lang, count=5):
+    '''Gets the most popular posts. TODO add popularity based on language'''
+    popular_posts = Post.published.order_by('-visits')[:count]
+    return {'popular_posts': popular_posts}

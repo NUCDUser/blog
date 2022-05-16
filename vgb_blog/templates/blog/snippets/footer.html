@@ -1,51 +1,85 @@
 {% load i18n %}
 
-<footer class="border-top mt-auto">
+{% include 'blog/snippets/donate.html' %}
+
+<footer class="border-top" id="footer">
   <div class="container-md">
-    <div class="row row-cols-5 py-5 my-5">
-      <div class="col">
-        <a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
-          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-        </a>
-        <p class="text-muted">&copy; 2021</p>
+    <div class="row row-cols-5 py-5">
+      <div class="col-12 col-md-4 text-md-start text-center my-2">
+        <h5>{% trans 'Stay Connected' %}</h5>
+        <p class="text-muted">
+          {% blocktrans %}
+            Receive the latest news and articles as soon as they are released.
+            We only send our newsletters once a month and you can easily unsubscribe whenever desired.
+          {% endblocktrans %}
+        </p>
+        <form class="row">
+          <div class="col-9">
+            <label for="{{ newsletter_form.label.id }}" class="form-label" aria-hidden="email address"></label>
+            {{ newsletter_form.email }}
+          </div>
+          <button type="submit" class="btn btn-success col-3 rounded-0">{% trans 'Sign-Up' %}</button>
+        </form>
       </div>
   
-      <div class="col">
+      <div class="col-12 col-md-2 text-md-start text-center my-2"></div>
   
-      </div>
-  
-      <div class="col">
-        <h5>{% trans 'Section' %}</h5>
+      <div class="col-12 col-md-2 text-md-start text-center my-2">
+        <h5>{% trans 'About' %}</h5>
         <ul class="nav flex-column">
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Home' %}</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Features' %}</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Pricing' %}</a></li>
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'VGB Blog' %}</a></li>
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Francisco' %}</a></li>
+        </ul>
+      </div>
+  
+      <div class="col-12 col-md-2 text-md-start text-center my-2">
+        <h5>{% trans 'Information' %}</h5>
+        <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'FAQs' %}</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'About' %}</a></li>
+          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">{% trans 'Disclaimer' %}</a></li>
         </ul>
       </div>
   
-      <div class="col">
-        <h5>{% trans 'Section' %}</h5>
+      <div class="col-12 col-md-2 text-md-start text-center my-2">
+        <h5>{% trans 'Follow Us' %}</h5>
         <ul class="nav flex-column">
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+          <li class="nav-item mb-2">
+            <a href="#" class="nav-link p-0 text-muted">
+              <i class="bi bi-instagram"></i>
+              Instagram
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="#" class="nav-link p-0 text-muted">
+              <i class="bi bi-facebook"></i>
+              Facebook 
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="#" class="nav-link p-0 text-muted">
+              <i class="bi bi-twitter"></i>
+              Twitter 
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a href="#" class="nav-link p-0 text-muted">
+              <i class="bi bi-youtube"></i>
+              YouTube 
+            </a>
+          </li>
         </ul>
       </div>
-  
-      <div class="col">
-        <h5>{% trans 'Section' %}</h5>
-        <ul class="nav flex-column">
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-          <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
-        </ul>
-      </div>
+    </div>
+  </div>
+</footer>
+
+<footer class="border-top" id="legal">
+  <div class="container-md">
+    <div class="row py-2">
+      <p class="col-md-3 col-12 text-muted m-0 text-md-start text-center order-last order-md-first">VG Bassoonist | VGB Music &copy; {% now "Y" %}</p>
+      <a class="col-md-3 col-4 text-center py-2 py-md-0" href="#">{% trans 'Disclaimer' %}</a>
+      <a class="col-md-3 col-4 text-center py-2 py-md-0" href="#">{% trans 'Privacy Policy' %}</a>
+      <a class="col-md-3 col-4 text-center py-2 py-md-0" href="#">{% trans 'Sitemap' %}</a>
     </div>
   </div>
 </footer>
